@@ -35,6 +35,7 @@
                         let title = 'Availability';
                         let start = info.dateStr + ' ' + '06:00';
                         let end = info.dateStr + ' ' + '07:00';
+                        
 
                         if (title) {
                             fetch('/api/events', {

@@ -12,11 +12,18 @@ class EventController extends Controller
 {
     public function index()
     {
+
+        $date = date('Y-m-d H:i:s');
         $auth = Auth::id();
 
         $events = $auth ?
-            Event::query()->where('id_user', '!=', $auth)->get() :
+            Event::query()->where('id_user', '!=', $auth)->where('end', '>' , $date )->get() :
             Event::get();
+
+        foreach ($events as $event) {
+            $event->start = explode('T', $event->start);
+            $event->end = explode('T', $event->end);
+        }
 
 
         $data = [
@@ -39,6 +46,7 @@ class EventController extends Controller
 
     public function store(EventRequest $eventRequest)
     {
+
         $event = new Event;
 
         $event->title = $eventRequest->title;
