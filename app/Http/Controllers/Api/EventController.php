@@ -21,8 +21,8 @@ class EventController extends Controller
             Event::get();
 
         foreach ($events as $event) {
-            $event->start = explode('T', $event->start);
-            $event->end = explode('T', $event->end);
+            $event->start = explode(' ', $event->start);
+            $event->end = explode(' ', $event->end);
         }
 
 
@@ -47,13 +47,75 @@ class EventController extends Controller
     public function store(EventRequest $eventRequest)
     {
 
-        $event = new Event;
 
-        $event->title = $eventRequest->title;
-        $event->start = $eventRequest->start;
-        $event->end = $eventRequest->end;
-        $event->id_user = $eventRequest->id_user;
-        $event->save();
+            $event = new Event;
+
+            $event->title = $eventRequest->title;
+            $event->start = $eventRequest->start;
+            $event->end = $eventRequest->end;
+            $event->id_user = $eventRequest->id_user;
+
+            $event->save();
+
+    }
+
+    public function storeEveryday(EventRequest $eventRequest)
+    {
+
+        $start = new \DateTime($eventRequest->start);
+
+        $year = (int) $start->format('Y');
+        $nextYear = $year + 1;
+
+        $endEv = new \DateTime($eventRequest->end);
+        $interval = new \DateInterval('P1D');
+        $end = new \DateTime("$nextYear-01-01 00:00");
+
+        while ($start < $end) {
+            $event = new Event;
+
+            $event->title = $eventRequest->title;
+            $event->start = $start;
+            $event->end = $endEv;
+            $event->id_user = $eventRequest->id_user;
+
+            $event->save();
+
+
+
+            $start->add($interval);
+            $endEv->add($interval);
+        }
+
+    }
+
+    public function storeWeekly(EventRequest $eventRequest)
+    {
+
+        $start = new \DateTime($eventRequest->start);
+
+        $year = (int) $start->format('Y');
+        $nextYear = $year + 1;
+
+        $endEv = new \DateTime($eventRequest->end);
+        $interval = new \DateInterval('P7D');
+        $end = new \DateTime("$nextYear-01-01 00:00");
+
+        while ($start < $end) {
+            $event = new Event;
+
+            $event->title = $eventRequest->title;
+            $event->start = $start;
+            $event->end = $endEv;
+            $event->id_user = $eventRequest->id_user;
+
+            $event->save();
+
+
+
+            $start->add($interval);
+            $endEv->add($interval);
+        }
 
     }
 
